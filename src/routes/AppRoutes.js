@@ -1,222 +1,124 @@
-import * as React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// screens import
 import {
-  GenderScreen,
-  HourScreen,
-  ImcScreen,
-  InitScreen,
-  LoginScreen,
-  ObjectiveScreen,
-  RegisterScreen,
   HomeScreen,
   TeacherScreen,
   WorkoutsScreen,
-  OthersScreen,
-} from "../screens";
+  OptionsScreen,
+  AuthLogin,
+  AuthRegister,
+  InfoScreen,
+  Payments,
+} from "../screens/index";
+
+// icon
 import { FontAwesome5 } from "@expo/vector-icons";
 
-const Stack = createNativeStackNavigator();
+// react navigation imports
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+
+// criação tab navigator e stack navigator
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-const InitialScreen = () => {
-  return (
-    <Stack.Navigator initialRouteName="GenderScreen">
-      <Stack.Screen
-        name="InitScreen"
-        component={InitScreen}
-        options={{
-          title: "",
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTintColor: "#fff",
-        }}
-      />
-      <Stack.Screen
-        name="RegisterScreen"
-        component={RegisterScreen}
-        options={{
-          title: "",
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTintColor: "#fff",
-        }}
-      />
-      <Stack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        options={{
-          title: "",
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTintColor: "#fff",
-        }}
-      />
-      <Stack.Screen
-        name="GenderScreen"
-        component={GenderScreen}
-        options={{
-          title: "",
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTintColor: "#fff",
-        }}
-      />
-      <Stack.Screen
-        name="ObjectiveScreen"
-        component={ObjectiveScreen}
-        options={{
-          title: "",
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTintColor: "#fff",
-        }}
-      />
-      <Stack.Screen
-        name="HourScreen"
-        component={HourScreen}
-        options={{
-          title: "",
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTintColor: "#fff",
-        }}
-      />
-      <Stack.Screen
-        name="ImcScreen"
-        component={ImcScreen}
-        options={{
-          title: "",
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTintColor: "#fff",
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
-
-const HomeTabScreen = () => {
+const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
           if (route.name === "Home") {
             iconName = focused ? "home" : "home";
-          } else if (route.name == "Professor") {
+          } else if (route.name === "Professor") {
             iconName = focused ? "user-circle" : "user-circle";
-          } else if (route.name == "Treinos") {
+          } else if (route.name === "Treinos") {
             iconName = focused ? "weight-hanging" : "weight-hanging";
-          } else if (route.name == "Conta") {
+          } else if (route.name === "Opções") {
             iconName = focused ? "align-justify" : "align-justify";
           }
 
-          // You can return any component that you like here!
+          // retornando o icone
           return <FontAwesome5 name={iconName} size={22} color={color} />;
         },
         tabBarActiveTintColor: "#2562FF",
         tabBarInactiveTintColor: "#fff",
+        headerTitleAlign: "center",
+        headerTitleStyle: { color: "#fff" },
         tabBarStyle: {
           position: "absolute",
           backgroundColor: "#1a1a1a",
 
           height: 50,
         },
-      })}>
-      <Tab.Screen
-        options={{
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            color: "#fff",
-            fontSize: 20,
-          },
-        }}
-        name="Home"
-        component={HomeScreen}
-      />
-      <Tab.Screen
-        options={{
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            color: "#fff",
-            fontSize: 20,
-          },
-        }}
-        name="Professor"
-        component={TeacherScreen}
-      />
-      <Tab.Screen
-        options={{
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            color: "#fff",
-            fontSize: 20,
-          },
-        }}
-        name="Treinos"
-        component={WorkoutsScreen}
-      />
-      <Tab.Screen
-        options={{
-          headerStyle: {
-            backgroundColor: "#1a1a1a",
-          },
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            color: "#fff",
-            fontSize: 20,
-          },
-        }}
-        name="Conta"
-        component={OthersScreen}
-      />
+        headerStyle: {
+          backgroundColor: "#1a1a1a",
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Professor" component={TeacherScreen} />
+      <Tab.Screen name="Treinos" component={WorkoutsScreen} />
+      <Tab.Screen name="Opções" component={OptionsScreen} />
     </Tab.Navigator>
+  );
+};
+
+const StackNavigator = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="AuthLogin"
+      screenOptions={({ navigation }) => ({
+        headerStyle: {
+          backgroundColor: "#1a1a1a",
+        },
+        headerTitle: "",
+        headerTintColor: "#fff",
+      })}
+    >
+      <Stack.Screen name="AuthRegister" component={AuthRegister} />
+      <Stack.Screen name="AuthLogin" component={AuthLogin} />
+    </Stack.Navigator>
+  );
+};
+
+const BottomTabScreens = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={({ navigation }) => ({
+        headerStyle: {
+          backgroundColor: "#1a1a1a",
+        },
+        headerTitle: "",
+        headerTintColor: "#fff",
+      })}
+    >
+      <Stack.Screen name="InfoScreen" component={InfoScreen} />
+      <Stack.Screen name="Payments" component={Payments} />
+    </Stack.Navigator>
   );
 };
 
 const AppRoutes = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        initialRouteName="StackNavigator"
+        screenOptions={() => ({
+          headerStyle: {
+            backgroundColor: "#1a1a1a",
+          },
+          headerShown: false,
+        })}
+      >
         <Stack.Screen
-          options={{
-            title: "",
-            headerStyle: {
-              backgroundColor: "#1a1a1a",
-            },
-          }}
-          name="InitScreen"
-          component={InitialScreen}
+          name="BottomTabNavigator"
+          component={BottomTabNavigator}
         />
-        <Stack.Screen
-          options={{
-            title: "",
-            headerStyle: {
-              backgroundColor: "#1a1a1a",
-            },
-          }}
-          name="HomeScreen"
-          component={HomeTabScreen}
-        />
+        <Stack.Screen name="StackNavigator" component={StackNavigator} />
+        <Stack.Screen name="BottomTabScreens" component={BottomTabScreens} />
       </Stack.Navigator>
     </NavigationContainer>
   );

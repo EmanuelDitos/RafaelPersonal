@@ -1,25 +1,19 @@
-import GenderScreen from "./GenderScreen/GenderScreen";
-import InitScreen from "./InitScreen/InitScreen";
-import HourScreen from "./HourScreen/HourScreen";
-import ImcScreen from "./ImcScreen/ImcScreen";
-import LoginScreen from "./LoginScreen/LoginScreen";
-import ObjectiveScreen from "./Objective/ObjectiveScreen";
-import RegisterScreen from "./RegisterScreen/RegisterScreen";
-import HomeScreen from "./HomeScreen/HomeScreen";
-import TeacherScreen from "./TeacherScreen/TeacherScreen";
-import WorkoutsScreen from "./WorkoutsScreen/WorkoutsScreen";
-import OthersScreen from "./OthersScreen/OthersScreen";
+import HomeScreen from "./HomeScreen";
+import TeacherScreen from "./TeacherScreen";
+import WorkoutsScreen from "./WorkoutsScreen";
+import OptionsScreen from "./OptionsScreen";
+import AuthLogin from "./AuthLogin";
+import AuthRegister from "./AuthRegister";
+import InfoScreen from "./InfoScreen";
+import Payments from "./Payments";
 
 export {
-  GenderScreen,
-  InitScreen,
-  HourScreen,
-  ImcScreen,
-  LoginScreen,
-  ObjectiveScreen,
-  RegisterScreen,
   HomeScreen,
   TeacherScreen,
   WorkoutsScreen,
-  OthersScreen,
+  OptionsScreen,
+  AuthLogin,
+  AuthRegister,
+  InfoScreen,
+  Payments,
 };
