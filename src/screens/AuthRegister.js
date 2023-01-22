@@ -60,6 +60,8 @@ const AuthRegister = ({ navigation }) => {
   const onSubmit = (data) => {
     //console.log(data);
 
+    const userName = data.username;
+    console.log(userName);
     setLoading(true);
 
     const auth = getAuth();
@@ -75,8 +77,8 @@ const AuthRegister = ({ navigation }) => {
         navigation.navigate("BottomTabNavigator", {
           screen: "Home",
           params: {
-            userName: data.username,
-            userId: uid,
+            userID: user.uid,
+            userName: userData,
           },
         });
       })
@@ -134,7 +136,7 @@ const AuthRegister = ({ navigation }) => {
             <TextInput
               style={styles.input}
               placeholderTextColor="#000"
-              placeholder="Nome (cadastro)"
+              placeholder="Nome Completo"
               value={value}
               onChangeText={onChange}
               autoCapitalize="none"

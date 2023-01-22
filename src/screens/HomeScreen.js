@@ -2,20 +2,23 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 
 const HomeScreen = ({ route, navigation }) => {
-  const userId = route.params?.userId;
   const userName = route.params?.userName;
+  const userID = route.params?.userID;
 
   return (
     <View style={styles.container}>
       <View style={styles.infoWrapper}>
         <Text style={styles.headerTxt}>condição e objetivos</Text>
-        <Text style={styles.txt}>IMC:{userId} </Text>
-        <Text style={styles.txt}>Objetivo: {userName}</Text>
-        <Text style={styles.txt}>Horário: </Text>
+        <Text>{userName}</Text>
+        <Text>{userID}</Text>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("BottomTabScreens", {
               screen: "InfoScreen",
+              params: {
+                userName: userName,
+                userID: userID,
+              },
             })
           }
           style={styles.btn}

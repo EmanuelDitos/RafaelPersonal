@@ -15,9 +15,13 @@ const InfoScreen = ({ navigation, route }) => {
   const [objetivo, setObjetivo] = useState("");
   const [hora, setHora] = useState("");
   const [peso, setPeso] = useState();
-  const [altura, setAltura] = useState([]);
+  const [altura, setAltura] = useState();
   const [error, setError] = useState("");
-  const [imc, setImc] = useState("");
+  const [imc, setIMC] = useState();
+
+  const userName = route.params?.userName;
+  const userID = route.params?.userID;
+
   {
     /* Data para os menus dropdown */
   }
@@ -63,28 +67,20 @@ const InfoScreen = ({ navigation, route }) => {
     return true;
   };
 
-  const calcImc = (altura, peso) => {
+  const calcIMC = (altura, peso) => {
     altura = altura / 100;
     const imc = peso / (altura * altura);
-    setImc(imc);
-  };
-
-  const firebaseAdd = async (user) => {
-    const database = {
-      genero: "",
-      objetivo: "",
-      horario: "",
-      peso: "",
-      altura: "",
-      imc: "",
-    };
-    await setDoc(doc(db, "users", data.username), database);
+    setIMC(imc.toFixed(2));
+    return true;
   };
 
   const handleSave = () => {
     if (validate()) {
-      calcImc(altura, peso);
-      navigation.navigate("BottomTabNavigator");
+      if (calcIMC(altura, peso)) {
+        navigation.navigate("BottomTabNavigator", {
+          screen: "Home",
+        });
+      }
     }
   };
 
@@ -161,8 +157,8 @@ const InfoScreen = ({ navigation, route }) => {
           setSelected={(val) => setAltura(val)}
         />
       </View>
-      <Text>{route.params?.docName}</Text>
-      <Text>{route.params?.userId}</Text>
+      <Text>{userName}</Text>
+      <Text>{userID}</Text>
       {error && <Text style={{ color: "red" }}>{error}</Text>}
       <View style={{ marginTop: 40 }}>
         <TouchableOpacity onPress={handleSave} style={styles.btn}>
