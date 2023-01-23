@@ -9,6 +9,7 @@ import { useState } from "react";
 import { SelectList } from "react-native-dropdown-select-list";
 import { db } from "../firebase/Firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const InfoScreen = ({ navigation, route }) => {
   const [sex, setSex] = useState("");
@@ -17,10 +18,9 @@ const InfoScreen = ({ navigation, route }) => {
   const [peso, setPeso] = useState();
   const [altura, setAltura] = useState();
   const [error, setError] = useState("");
-  const [imc, setIMC] = useState();
 
-  const userName = route.params?.userName;
-  const userID = route.params?.userID;
+  let user = getAuth().currentUser;
+  let userID = user.uid;
 
   {
     /* Data para os menus dropdown */
@@ -67,16 +67,31 @@ const InfoScreen = ({ navigation, route }) => {
     return true;
   };
 
+  const firebaseAdd = async () => {
+    const database = {
+      genero: sex,
+      objetivo: objetivo,
+      hora: hora,
+      peso: peso,
+      altura: altura,
+      imc: calcIMC(altura, peso),
+    };
+    await setDoc(doc(db, "users", userID), database, {
+      merge: true,
+    });
+  };
+
   const calcIMC = (altura, peso) => {
-    altura = altura / 100;
+    altura = parseFloat(altura) / 100;
+    peso = parseFloat(peso);
     const imc = peso / (altura * altura);
-    setIMC(imc.toFixed(2));
-    return true;
+    return imc;
   };
 
   const handleSave = () => {
     if (validate()) {
       if (calcIMC(altura, peso)) {
+        firebaseAdd();
         navigation.navigate("BottomTabNavigator", {
           screen: "Home",
         });
@@ -157,7 +172,6 @@ const InfoScreen = ({ navigation, route }) => {
           setSelected={(val) => setAltura(val)}
         />
       </View>
-      <Text>{userName}</Text>
       <Text>{userID}</Text>
       {error && <Text style={{ color: "red" }}>{error}</Text>}
       <View style={{ marginTop: 40 }}>
