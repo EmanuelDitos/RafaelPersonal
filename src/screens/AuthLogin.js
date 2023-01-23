@@ -99,9 +99,6 @@ const AuthLogin = ({ navigation }) => {
         // Navegando para as bottomsbars e passando o uid como parametro para a página home.
         navigation.navigate("BottomTabNavigator", {
           screen: "Home",
-          params: {
-            userId: uid,
-          },
         });
 
         // ...
