@@ -1,3 +1,8 @@
+/*
+TODO:
+descomentar todas essas linhas de código
+*/
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp, getApps, getApp } from "firebase/app";
 import {
