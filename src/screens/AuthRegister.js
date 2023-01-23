@@ -53,15 +53,13 @@ const AuthRegister = ({ navigation }) => {
       email: data.email,
       treinos: {},
     };
-    await setDoc(doc(db, "users", data.username), database);
+    await setDoc(doc(db, "users", user.uid), database);
   };
 
   //console.log(errors);
   const onSubmit = (data) => {
     //console.log(data);
 
-    const userName = data.username;
-    console.log(userName);
     setLoading(true);
 
     const auth = getAuth();
@@ -76,10 +74,6 @@ const AuthRegister = ({ navigation }) => {
 
         navigation.navigate("BottomTabNavigator", {
           screen: "Home",
-          params: {
-            userID: user.uid,
-            userName: userData,
-          },
         });
       })
       .catch((error) => {
