@@ -48,7 +48,7 @@ const AuthRegister = ({ navigation }) => {
   // Função para adicionar o usuário no firebase
   const firebaseAdd = async (user, data) => {
     const database = {
-      userId: user.uid,
+      userID: user.uid,
       nome: data.username,
       email: data.email,
       treinos: {},
