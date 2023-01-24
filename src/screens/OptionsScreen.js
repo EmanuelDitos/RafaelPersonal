@@ -6,8 +6,20 @@ import {
   FontAwesome5,
   Ionicons,
 } from "@expo/vector-icons";
+import { getAuth, signOut } from "firebase/auth";
 
 const OptionsScreen = ({ navigation }) => {
+  const logOut = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        navigation.navigate("StackNavigator");
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.wrapperView}>
@@ -60,7 +72,7 @@ const OptionsScreen = ({ navigation }) => {
         </View>
         <View style={styles.divisor}></View>
         <View style={styles.viewItems}>
-          <TouchableOpacity style={styles.btnView}>
+          <TouchableOpacity onPress={logOut} style={styles.btnView}>
             <Ionicons name="exit-outline" size={24} color="white" />
             <Text style={styles.txt}>Sair</Text>
           </TouchableOpacity>
