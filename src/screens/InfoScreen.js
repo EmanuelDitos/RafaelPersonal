@@ -4,6 +4,7 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useState } from "react";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -12,11 +13,13 @@ import { doc, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const InfoScreen = ({ navigation, route }) => {
-  const [sex, setSex] = useState("");
-  const [objetivo, setObjetivo] = useState("");
-  const [hora, setHora] = useState("");
-  const [peso, setPeso] = useState();
-  const [altura, setAltura] = useState();
+  const [formData, setFormData] = useState({
+    genero: "",
+    objetivo: "",
+    hora: "",
+    peso: "",
+    altura: "",
+  });
   const [error, setError] = useState("");
 
   let user = getAuth().currentUser;
@@ -58,7 +61,7 @@ const InfoScreen = ({ navigation, route }) => {
   }
 
   const validate = () => {
-    if (!sex || !objetivo || !hora || !peso || !altura) {
+    if (Object.values(formData).some((val) => !val)) {
       //console.log("Erro");
       setError("Preencha todos os campos.");
       return false;
@@ -67,18 +70,23 @@ const InfoScreen = ({ navigation, route }) => {
     return true;
   };
 
-  const firebaseAdd = async () => {
-    const database = {
-      genero: sex,
-      objetivo: objetivo,
-      hora: hora,
-      peso: peso,
-      altura: altura,
-      imc: calcIMC(altura, peso),
-    };
-    await setDoc(doc(db, "users", userID), database, {
-      merge: true,
-    });
+  const firebaseAdd = async ({ genero, objetivo, hora, peso, altura }) => {
+    try {
+      const database = {
+        genero: genero,
+        objetivo: objetivo,
+        hora: hora,
+        peso: peso,
+        altura: altura,
+        imc: calcIMC(formData.altura, formData.peso).toFixed(2),
+      };
+      await setDoc(doc(db, "users", userID), database, {
+        merge: true,
+      });
+    } catch (error) {
+      Alert.alert("Erro ao salvar as informações. Tente novamente mais tarde.");
+      console.log(error);
+    }
   };
 
   const calcIMC = (altura, peso) => {
@@ -90,12 +98,10 @@ const InfoScreen = ({ navigation, route }) => {
 
   const handleSave = () => {
     if (validate()) {
-      if (calcIMC(altura, peso)) {
-        firebaseAdd();
-        navigation.navigate("BottomTabNavigator", {
-          screen: "Home",
-        });
-      }
+      firebaseAdd(formData);
+      navigation.navigate("BottomTabNavigator", {
+        screen: "Home",
+      });
     }
   };
 
@@ -111,9 +117,9 @@ const InfoScreen = ({ navigation, route }) => {
           inputStyles={{ color: "#000" }}
           dropdownTextStyles={{ color: "#fff" }}
           dropdownStyles={{ backgroundColor: "#333333" }}
-          value="value"
+          value={formData.genero}
           data={gender}
-          setSelected={(val) => setSex(val)}
+          setSelected={(text) => setFormData({ ...formData, genero: text })}
         />
       </View>
       <View>
@@ -125,9 +131,9 @@ const InfoScreen = ({ navigation, route }) => {
           inputStyles={{ color: "#000" }}
           dropdownTextStyles={{ color: "#fff" }}
           dropdownStyles={{ backgroundColor: "#333333" }}
-          value="value"
+          value={formData.objetivo}
           data={obje}
-          setSelected={(val) => setObjetivo(val)}
+          setSelected={(text) => setFormData({ ...formData, objetivo: text })}
         />
       </View>
       <View>
@@ -139,9 +145,9 @@ const InfoScreen = ({ navigation, route }) => {
           inputStyles={{ color: "#000" }}
           dropdownTextStyles={{ color: "#fff" }}
           dropdownStyles={{ backgroundColor: "#333333" }}
-          value="value"
+          value={formData.hora}
           data={time}
-          setSelected={(val) => setHora(val)}
+          setSelected={(text) => setFormData({ ...formData, hora: text })}
         />
       </View>
       <View>
@@ -153,9 +159,9 @@ const InfoScreen = ({ navigation, route }) => {
           inputStyles={{ color: "#000" }}
           dropdownTextStyles={{ color: "#fff" }}
           dropdownStyles={{ backgroundColor: "#333333" }}
-          value="value"
+          value={formData.peso}
           data={pesoNumbers}
-          setSelected={(val) => setPeso(val)}
+          setSelected={(text) => setFormData({ ...formData, peso: text })}
         />
       </View>
       <View>
@@ -167,12 +173,11 @@ const InfoScreen = ({ navigation, route }) => {
           inputStyles={{ color: "#000" }}
           dropdownTextStyles={{ color: "#fff" }}
           dropdownStyles={{ backgroundColor: "#333333" }}
-          value="value"
+          value={formData.altura}
           data={alturaNumbers}
-          setSelected={(val) => setAltura(val)}
+          setSelected={(text) => setFormData({ ...formData, altura: text })}
         />
       </View>
-      <Text>{userID}</Text>
       {error && <Text style={{ color: "red" }}>{error}</Text>}
       <View style={{ marginTop: 40 }}>
         <TouchableOpacity onPress={handleSave} style={styles.btn}>
@@ -183,6 +188,7 @@ const InfoScreen = ({ navigation, route }) => {
   );
 };
 export default InfoScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

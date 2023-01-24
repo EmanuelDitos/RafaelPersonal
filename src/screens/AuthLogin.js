@@ -35,6 +35,11 @@ const schema = yup.object({
 });
 
 const AuthLogin = ({ navigation }) => {
+  const errorCodes = {
+    "auth/user-not-found": "Usuário não cadastrado.",
+    "auth/wrong-password": "Senha incorreta.",
+    "auth/wrong-email": "Email incorreto.",
+  };
   const [loading, setLoading] = useState(false);
   const [visiblePass, setVisiblePass] = useState(true);
 
@@ -48,65 +53,43 @@ const AuthLogin = ({ navigation }) => {
   });
 
   //console.log(errors);
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     //console.log(data);
-
     // Função para fazer auth (login) do firebase.
-    setLoading(true);
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, data.email, data.password)
-      .then((userCredential) => {
-        // Signed in
-
-        const user = userCredential.user;
-        setLoading(false);
-
-        navigation.navigate("BottomTabNavigator", {
-          screen: "Home",
-          params: { userId: uid },
-        });
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode);
-        switch (errorCode) {
-          // Exibindo erros como alertas para o usuário.
-          case "auth/user-not-found":
-            Alert.alert("Usuário não cadastrado");
-            break;
-          case "auth/wrong-password":
-            Alert.alert("Senha incorreta.");
-            break;
-          case "auth/wrong-email":
-            Alert.alert("Email incorreto.");
-            break;
-        }
-        setLoading(false);
+    try {
+      setLoading(true);
+      const auth = getAuth();
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      navigation.navigate("BottomTabNavigator", {
+        screen: "Home",
       });
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = errorCodes[errorCode] || "Erro desconhecido.";
+      Alert.alert(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Verificando se o usuário está logado, se estiver vai para a rota das bottom tabs.
   useEffect(() => {
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
         const uid = user.uid;
-
-        // Navegando para as bottomsbars e passando o uid como parametro para a página home.
+        // Navegando para as bottomsbars.
         navigation.navigate("BottomTabNavigator", {
           screen: "Home",
         });
-
         // ...
       } else {
         // User deslogado
       }
     });
-  });
+    // limpar função
+    return () => unsubscribe();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

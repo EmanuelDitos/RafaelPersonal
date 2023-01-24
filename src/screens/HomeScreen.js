@@ -5,39 +5,27 @@ import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 
 const HomeScreen = ({ navigation }) => {
-  const [objetivo, setObjetivo] = useState();
-  const [hora, setHora] = useState();
-  const [peso, setPeso] = useState();
-  const [altura, setAltura] = useState();
-  const [imc, setIMC] = useState();
+  const [userData, setUserData] = useState({});
 
   let user = getAuth().currentUser;
   let userID = user.uid;
 
-  const readData = async () => {
-    const unsub = onSnapshot(doc(db, "users", userID), (doc) => {
-      console.log("Current data: ", doc.data());
-      setObjetivo(doc.data().objetivo);
-      setHora(doc.data().hora);
-      setPeso(doc.data().peso);
-      setAltura(doc.data().altura);
-      setIMC(doc.data().imc);
-    });
-  };
-
   useEffect(() => {
-    readData();
-  }, []);
+    const unsub = onSnapshot(doc(db, "users", userID), (doc) => {
+      setUserData(doc.data());
+    });
+    return () => unsub();
+  }, [userID]);
 
   return (
     <View style={styles.container}>
       <View style={styles.infoWrapper}>
         <Text style={styles.headerTxt}>condição e objetivos</Text>
-        <Text style={styles.txtInfo}>Objetivo: {objetivo}</Text>
-        <Text style={styles.txtInfo}>Horário: {hora}</Text>
-        <Text style={styles.txtInfo}>Peso: {peso}</Text>
-        <Text style={styles.txtInfo}>Altura: {altura}</Text>
-        <Text style={styles.txtInfo}>Imc: {imc.toFixed(2)}</Text>
+        <Text style={styles.txtInfo}>Objetivo: {userData.objetivo}</Text>
+        <Text style={styles.txtInfo}>Horário: {userData.hora}</Text>
+        <Text style={styles.txtInfo}>Peso: {userData.peso}</Text>
+        <Text style={styles.txtInfo}>Altura: {userData.altura}</Text>
+        <Text style={styles.txtInfo}>Imc: {userData.imc}</Text>
         <Text style={styles.txtInfo}></Text>
         <TouchableOpacity
           onPress={() =>

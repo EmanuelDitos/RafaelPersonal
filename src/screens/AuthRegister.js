@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import logo from "../../assets/logo.png";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, get } from "react-hook-form";
 import { Feather } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -35,6 +35,10 @@ const schema = yup.object({
 const AuthRegister = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [visiblePass, setVisiblePass] = useState(true);
+  const [errorCodes, setErrorCodes] = useState({
+    "auth/email-already-in-use": "Email já está em uso.",
+    "auth/email-already-exists": "Essa conta de email já existe.",
+  });
 
   // useform react-hook-forms passando schema de validação do yup
   const {
@@ -57,35 +61,26 @@ const AuthRegister = ({ navigation }) => {
   };
 
   //console.log(errors);
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     //console.log(data);
-
     setLoading(true);
-
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, data.email, data.password)
-      .then((userCredential) => {
-        //console.log("Criado");
-        const user = userCredential.user;
-
-        firebaseAdd(user, data);
-
-        setLoading(false);
-
-        navigation.navigate("BottomTabNavigator", {
-          screen: "Home",
-        });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        switch (errorCode) {
-          case "auth/email-already-in-use":
-            setLoading(false);
-            Alert.alert("Email já está em uso.");
-            break;
-        }
-      });
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+      const user = userCredential.user;
+      await firebaseAdd(user, data);
+      setLoading(false);
+      navigation.navigate("BottomTabNavigator", { screen: "Home" });
+    } catch (error) {
+      setLoading(false);
+      const errorCode = error.code;
+      const errorMessage = errorCodes[errorCode] || "Erro desconhecido.";
+      Alert.alert(errorMessage);
+    }
   };
 
   return (
