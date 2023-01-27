@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   bioView: {
-    paddingHorizontal: 15,
-    marginVertical: 20,
+    padding: 15,
+    marginVertical: 30,
   },
   divisor: {
     borderWidth: StyleSheet.hairlineWidth,

@@ -1,15 +1,8 @@
-/*
-TODO:
-descomentar todas essas linhas de código
-*/
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp, getApps, getApp } from "firebase/app";
-import {
-  initializeAuth,
-  getReactNativePersistence,
-} from "firebase/auth/react-native";
-import { getFirestore } from "firebase/firestore";
+import { getReactNativePersistence } from "firebase/auth/react-native";
+import { initializeFirestore } from "firebase/firestore";
+import { initializeAuth } from "firebase/auth/react-native";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDLsNAmqpoMjBWcIHlkVZVizI_dYyuuBQc",
@@ -26,6 +19,8 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
-const db = getFirestore(app);
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
 
 export { auth, db };

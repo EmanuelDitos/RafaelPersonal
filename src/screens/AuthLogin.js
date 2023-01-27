@@ -74,6 +74,7 @@ const AuthLogin = ({ navigation }) => {
 
   // Verificando se o usuário está logado, se estiver vai para a rota das bottom tabs.
   useEffect(() => {
+    setLoading(true);
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -82,9 +83,11 @@ const AuthLogin = ({ navigation }) => {
         navigation.navigate("BottomTabNavigator", {
           screen: "Home",
         });
+        setLoading(false);
         // ...
       } else {
         // User deslogado
+        setLoading(false);
       }
     });
     // limpar função
