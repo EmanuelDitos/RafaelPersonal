@@ -18,7 +18,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 
-// criação tab navigator e stack navigator
+// criação tab navigator e stack navigator teste
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
